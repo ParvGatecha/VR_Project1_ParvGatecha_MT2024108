@@ -160,17 +160,16 @@ def load_images():
 
 | Model Variation | Optimizer | Activation | Accuracy   | Epochs |
 | --------------- | --------- | ---------- | ---------- | ------ |
-| CNN V1          | Adam      | ReLU       | 96.34%     | 100    |
-| CNN V1          | SGD       | ReLU       | *96.70%*   | 100    |
-| CNN V1          | Adam      | Tanh       | 88.64%     | 100    |
-| CNN V1          | SGD       | Tanh       | 95.73%     | 100    |
+| CNN V1          | Adam      | ReLU       | 96.34%     | 10     |
+| CNN V1          | SGD       | ReLU       | *96.70%*   | 10     |
+| CNN V1          | Adam      | Tanh       | 88.64%     | 10     |
+| CNN V1          | SGD       | Tanh       | 95.73%     | 10     |
 |                 |           |            |            |        |
-| CNN V2          | Adam      | ReLU       | 96.95%     | 50     |
-| CNN V2          | SGD       | ReLU       | 97.19%     | 50     |
-| CNN V2          | Adam      | Tanh       | 84.37%     | 50     |
-| CNN V2          | SGD       | Tanh       | *97.31%*   | 50     |
+| CNN V2          | Adam      | ReLU       | 96.95%     | 10     |
+| CNN V2          | SGD       | ReLU       | 97.19%     | 10     |
+| CNN V2          | Adam      | Tanh       | 84.37%     | 10     |
+| CNN V2          | SGD       | Tanh       | *97.31%*   | 10     |
 |                 |           |            |            |        |
-
 
 ## Segmentation 
 
@@ -228,7 +227,6 @@ def load_images():
 **4. K means clustering:**
   - The K means model was trained for 10 iterations.
   - The final model forms 2 clusters of pixel and assigns the value 0 and 255 to them respectively.
-  - 
   ```
   _, labels, centers = cv2.kmeans(pixel_values, K, None,
                                     (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2), 
