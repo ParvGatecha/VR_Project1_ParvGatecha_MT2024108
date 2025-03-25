@@ -142,7 +142,21 @@ def load_images():
 
   - **Loss:**\
   ![image](https://github.com/user-attachments/assets/c9b7da6f-05d9-4655-a353-5c49fe860b2c)
-
+#### Hyperparameters and Experiments:
+- **Batch size:** 32\
+- **Epochs:** 10,20,50,100\
+- **Learning rate:** 0.001,0.01\
+- **Optimizer:** Adam\
+- **Activation function:** ReLU,LeakyReLU\
+- **Dropout rate:** 0.5,0.4,0.3\
+- **Number of filters:** 32, 64, 128\
+- **Kernel size:** 3, 3, 3\
+- **Pooling size:** 2, 2, 2\
+- **Number of units in dense layer:** 128,256\
+- **Output activation function:** softmax\
+- **Metrics:** accuracy, sparse categorical crossentropy\
+- **Loss function:** sparse categorical crossentropy\
+- **Model architecture:** CNN with 3 convolutional layers, 2 dense layers, and dropout
 
 ## Segmentation 
 
@@ -195,7 +209,7 @@ def load_images():
   ![image](https://github.com/user-attachments/assets/4af2805c-aa7e-49a0-a425-2093a4145c94)
 
   - **Accuracy**
-  Morphological Closing -> IoU: 0.2894, Dice Score: 0.4139
+  Morphological Closing -> IoU: 0.3174, Dice Score: 0.4607
 
 **4. K means clustering:**
   - The K means model was trained for 10 iterations.
@@ -210,6 +224,7 @@ def load_images():
 
 
   - **Accuracy**
+  K means -> IoU: 0.3614, Dice Score: 0.4985
 
 
   ### Using UNet:
@@ -272,13 +287,33 @@ def build_light_unet(input_shape=(64, 64, 3)):
 val_accuracy: 0.9712 - val_loss: 0.0731\
 Test Accuracy: 97.12%
 
-# Hyperparameters and Experiments:
-
-# Results:
+#### Hyperparameters and Experiments:
+- **Batch Size:** 32
+- **Epochs:** 50,100
+- **Learning Rate:** 0.001
+- **Optimizer:** Adam
+- **Loss Function:** Binary Cross-Entropy
+- **Metrics:** Accuracy
+- **Activation Functions:** ReLU, Sigmoid
+- **Model Architecture:** U-Net with Conv2D and Conv2DTranspose layers
+- **Number of Kernels:** 32,64,128,256,512
+- **Kernel Size:** 3,5,7
+- **Stride:** 1,2,3
+| Model Variation | Optimizer | Activation | Accuracy   | Epochs |
+| --------------- | --------- | ---------- | ---------- | ------ |
+| CNN V1          | Adam      | ReLU       | 96.34%     | 100    |
+| CNN V1          | SGD       | ReLU       | *96.70%* | 100    |
+| CNN V1          | Adam      | Tanh       | 88.64%     | 100    |
+| CNN V1          | SGD       | Tanh       | 95.73%     | 100    |
+|                 |           |            |            |        |
+| CNN V2          | Adam      | ReLU       | 96.95%     | 50     |
+| CNN V2          | SGD       | ReLU       | 97.19%     | 50     |
+| CNN V2          | Adam      | Tanh       | 84.37%     | 50     |
+| CNN V2          | SGD       | Tanh       | *97.31%* | 50     |
+|                 |           |            |            |        |
 
 # Observations and Analysis:
-
-# How to Run the Code:
+In both the Tasks it is observed that the handcrafted features are performing poorly when compared to the respective CNN architectures.
   
 
 
