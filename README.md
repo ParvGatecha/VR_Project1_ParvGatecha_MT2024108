@@ -1,19 +1,19 @@
 # VR Assignment 
 
-## Objectives:
+# Objectives:
 - To develop a computer vision solution to classify and segment face masks in images.
 - The project involves using handcrafted features with machine learning classifiers and deep
 learning techniques to perform classification and segmentation.
 
 
-## Dataset:
+# Dataset:
 - A labeled dataset containing images of people with and without face masks: https://github.com/chandrikadeb7/Face-Mask-Detection/tree/master/dataset
 
 - A Masked Face Segmentation Dataset with ground truth face masks can be accessed
 here: https://github.com/sadjadrz/MFSD
 
-# Classification
-## Methodology:
+
+# Methodology:
 
 - **Load the dataset:**
     
@@ -36,7 +36,7 @@ def load_images():
     return np.array(X), np.array(y)
 ```
 
-
+## Classification
   ### Using handcrafted features
 - **Handcrafted features used:**
     1. HOG(Histogram of Oriented Gradient)
@@ -144,5 +144,145 @@ def load_images():
   ![image](https://github.com/user-attachments/assets/c9b7da6f-05d9-4655-a353-5c49fe860b2c)
 
 
-# Segmentation 
+## Segmentation 
+
+  ### Using handcrafted features
+- **Handcrafted features used:**
+    1. OTSU thresholding
+    2. Canny edge detector
+    3. Morphological closing
+    4. K means clustering
+
+
+- Original image used:
+![image](https://github.com/user-attachments/assets/6acb70cf-4ce2-451e-863b-4d538b0780ba)
+
+**1. OTSU thresholding:**
+  
+  - Image was converted to grayscale first.
+  - OTSU thresholding was applied using library function provided by opencv.
+    ```       
+    _, binary_img = cv2.threshold(img, 0, 255, cv2.THRESH_OTSU)
+    ```
+
+    ![image](https://github.com/user-attachments/assets/d8f1695e-2cba-406f-867c-838120f2dd30)
+
+  - **Accuracy**
+    Otsu's Thresholding -> IoU: 0.2910, Dice Score: 0.4070
+  
+**2. Canny edge detector:**
+    
+  - The image was first converted into grayuscale image.
+  - Then library function provided by opencv was used to detect edges
+  - This was the worst performing feature among all. 
+  
+  ```
+  edges = cv2.Canny(img, 50, 150)
+  ```
+  ![image](https://github.com/user-attachments/assets/98ae1ed1-1389-4c3a-a5b7-15708e82db43)
+
+  - **Accuracy**
+  Canny Edge Detection -> IoU: 0.1566, Dice Score: 0.2644
+
+**3. Morphological Closing:**
+  - Initially the image was converted to grayscale.
+  - Then OTSU thresholding was applied to convert it into binary image.
+  - Then closing was applied with a kernel of size 3x3.
+
+  ```
+    cv2.morphologyEx(dilated, cv2.MORPH_CLOSE, kernel)
+  ```
+  ![image](https://github.com/user-attachments/assets/4af2805c-aa7e-49a0-a425-2093a4145c94)
+
+  - **Accuracy**
+  Morphological Closing -> IoU: 0.2894, Dice Score: 0.4139
+
+**4. K means clustering:**
+  - The K means model was trained for 10 iterations.
+  - The final model forms 2 clusters of pixel and assigns the value 0 and 255 to them respectively.
+  - 
+  ```
+  _, labels, centers = cv2.kmeans(pixel_values, K, None,
+                                    (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2), 
+                                    10, cv2.KMEANS_RANDOM_CENTERS)
+  ```
+  ![image](https://github.com/user-attachments/assets/2fd88245-bdea-4cb9-9178-92489734a38d)
+
+
+  - **Accuracy**
+
+
+  ### Using UNet:
+  - Structure of UNet:
+```
+def build_light_unet(input_shape=(64, 64, 3)):
+    inputs = Input(input_shape)
+
+    # Encoder (Downsampling)
+    conv1 = Conv2D(32, (3,3), activation="relu", padding="same")(inputs)
+    conv1 = Conv2D(32, (3,3), activation="relu", padding="same")(conv1)
+    pool1 = MaxPooling2D((2,2))(conv1)
+
+    conv2 = Conv2D(64, (3,3), activation="relu", padding="same")(pool1)
+    conv2 = Conv2D(64, (3,3), activation="relu", padding="same")(conv2)
+    pool2 = MaxPooling2D((2,2))(conv2)
+
+    conv3 = Conv2D(128, (3,3), activation="relu", padding="same")(pool2)
+    conv3 = Conv2D(128, (3,3), activation="relu", padding="same")(conv3)
+    pool3 = MaxPooling2D((2,2))(conv3)
+
+    # Bottleneck
+    conv4 = Conv2D(256, (3,3), activation="relu", padding="same")(pool3)
+    conv4 = Conv2D(256, (3,3), activation="relu", padding="same")(conv4)
+
+    # Decoder (Upsampling)
+    up1 = Conv2DTranspose(128, (2,2), strides=(2,2), padding="same")(conv4)
+    up1 = concatenate([up1, conv3])
+    conv5 = Conv2D(128, (3,3), activation="relu", padding="same")(up1)
+    conv5 = Conv2D(128, (3,3), activation="relu", padding="same")(conv5)
+
+    up2 = Conv2DTranspose(64, (2,2), strides=(2,2), padding="same")(conv5)
+    up2 = concatenate([up2, conv2])
+    conv6 = Conv2D(64, (3,3), activation="relu", padding="same")(up2)
+    conv6 = Conv2D(64, (3,3), activation="relu", padding="same")(conv6)
+
+    up3 = Conv2DTranspose(32, (2,2), strides=(2,2), padding="same")(conv6)
+    up3 = concatenate([up3, conv1])
+    conv7 = Conv2D(32, (3,3), activation="relu", padding="same")(up3)
+    conv7 = Conv2D(32, (3,3), activation="relu", padding="same")(conv7)
+
+    # Output layer
+    outputs = Conv2D(1, (1,1), activation="sigmoid")(conv7)
+
+    # Compile Model
+    model = Model(inputs, outputs)
+    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+
+    return model
+```
+![image](https://github.com/user-attachments/assets/76cb56c7-5a34-47ea-a8e3-f4ca4fbdbe77)
+
+- Total params: 1,925,601 (7.35 MB)\
+  Trainable params: 1,925,601 (7.35 MB)\
+  Non-trainable params: 0 (0.00 B)\
+
+![image](https://github.com/user-attachments/assets/4a556e41-3687-4ef5-80e0-5521320e88f7)
+
+ - **Accuracy**
+val_accuracy: 0.9712 - val_loss: 0.0731\
+Test Accuracy: 97.12%
+
+# Hyperparameters and Experiments:
+
+# Results:
+
+# Observations and Analysis:
+
+# How to Run the Code:
+  
+
+
+
+
+
 
