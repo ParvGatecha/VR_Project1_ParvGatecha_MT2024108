@@ -143,20 +143,34 @@ def load_images():
   - **Loss:**\
   ![image](https://github.com/user-attachments/assets/c9b7da6f-05d9-4655-a353-5c49fe860b2c)
 #### Hyperparameters and Experiments:
-- **Batch size:** 32\
-- **Epochs:** 10,20,50,100\
-- **Learning rate:** 0.001,0.01\
-- **Optimizer:** Adam\
-- **Activation function:** ReLU,LeakyReLU\
-- **Dropout rate:** 0.5,0.4,0.3\
-- **Number of filters:** 32, 64, 128\
-- **Kernel size:** 3, 3, 3\
-- **Pooling size:** 2, 2, 2\
-- **Number of units in dense layer:** 128,256\
-- **Output activation function:** softmax\
-- **Metrics:** accuracy, sparse categorical crossentropy\
-- **Loss function:** sparse categorical crossentropy\
+- **Batch size:** 32
+- **Epochs:** 10,20,50,100
+- **Learning rate:** 0.001,0.01
+- **Optimizer:** Adam
+- **Activation function:** ReLU,LeakyReLU
+- **Dropout rate:** 0.5,0.4,0.3
+- **Number of filters:** 32, 64, 128
+- **Kernel size:** 3, 3, 3
+- **Pooling size:** 2, 2, 2
+- **Number of units in dense layer:** 128,256
+- **Output activation function:** softmax
+- **Metrics:** accuracy, sparse categorical crossentropy
+- **Loss function:** sparse categorical crossentropy
 - **Model architecture:** CNN with 3 convolutional layers, 2 dense layers, and dropout
+
+| Model Variation | Optimizer | Activation | Accuracy   | Epochs |
+| --------------- | --------- | ---------- | ---------- | ------ |
+| CNN V1          | Adam      | ReLU       | 96.34%     | 100    |
+| CNN V1          | SGD       | ReLU       | *96.70%*   | 100    |
+| CNN V1          | Adam      | Tanh       | 88.64%     | 100    |
+| CNN V1          | SGD       | Tanh       | 95.73%     | 100    |
+|                 |           |            |            |        |
+| CNN V2          | Adam      | ReLU       | 96.95%     | 50     |
+| CNN V2          | SGD       | ReLU       | 97.19%     | 50     |
+| CNN V2          | Adam      | Tanh       | 84.37%     | 50     |
+| CNN V2          | SGD       | Tanh       | *97.31%*   | 50     |
+|                 |           |            |            |        |
+
 
 ## Segmentation 
 
@@ -299,18 +313,7 @@ Test Accuracy: 97.12%
 - **Number of Kernels:** 32,64,128,256,512
 - **Kernel Size:** 3,5,7
 - **Stride:** 1,2,3
-| Model Variation | Optimizer | Activation | Accuracy   | Epochs |
-| --------------- | --------- | ---------- | ---------- | ------ |
-| CNN V1          | Adam      | ReLU       | 96.34%     | 100    |
-| CNN V1          | SGD       | ReLU       | *96.70%* | 100    |
-| CNN V1          | Adam      | Tanh       | 88.64%     | 100    |
-| CNN V1          | SGD       | Tanh       | 95.73%     | 100    |
-|                 |           |            |            |        |
-| CNN V2          | Adam      | ReLU       | 96.95%     | 50     |
-| CNN V2          | SGD       | ReLU       | 97.19%     | 50     |
-| CNN V2          | Adam      | Tanh       | 84.37%     | 50     |
-| CNN V2          | SGD       | Tanh       | *97.31%* | 50     |
-|                 |           |            |            |        |
+
 
 # Observations and Analysis:
 In both the Tasks it is observed that the handcrafted features are performing poorly when compared to the respective CNN architectures.
